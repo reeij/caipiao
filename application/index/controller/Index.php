@@ -175,18 +175,37 @@ class Index extends Controller
 
 	function daletou_history(){
 		$url = 'http://datachart.500.com/dlt/history/history.shtml';
-		// 定义采集规则
-		$rules = [
-			// 采集期号
-			'qi' => ['#tdata .t_tr1>.t_tr1','text'],
-		];
 		$table = QueryList::get($url)->find('#tablelist');
 
-		// 采集表的每行内容
 		$tableRows = $table->find('tr:gt(0)')->map(function($row){
 		    return $row->find('td')->texts()->all();
 		});
+		$data = $tableRows->all();
 
-		dump($tableRows->all());
+		foreach($data as $k => $v){
+			if($k == 0){
+				continue;
+			}
+			$history = [
+				'qi' => $data[$k][0],
+				'num1' => $data[$k][1],
+				'num2' => $data[$k][2],
+				'num3' => $data[$k][3],
+				'num4' => $data[$k][4],
+				'num5' => $data[$k][5],
+				'num6' => $data[$k][6],
+				'num7' => $data[$k][7],
+				'zhu1' => $data[$k][9],
+				'jj1' => $data[$k][10],
+				'zhu2' => $data[$k][11],
+				'jj2' => $data[$k][12],
+				'zong' => $data[$k][13],
+				'date' => $data[$k][14],
+			];
+
+			if(Db::name('daletou_history')->where('qi', $data[$k][0])->count() == 0){
+				Db::name('daletou_history')->insert($history);
+			}
+		}
 	}
 }
