@@ -1,0 +1,6 @@
+/runtime/
+*.log
+LICENSE.txt
+/log/
+.idea/
+application/database.php
