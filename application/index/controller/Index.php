@@ -7,11 +7,11 @@ use QL\QueryList;
 class Index extends Controller
 {
 	function shuangseqiu(){
-		return $this->tuijian($table = 'shuangseqiu', $rednum = 5, $bluenum = 2, $red_max = 33, $blue_max = 16);
+		return $this->tuijian($table = 'ssq', $rednum = 5, $bluenum = 2, $red_max = 33, $blue_max = 16);
 	}
 
 	function daletou(){
-		return $this->tuijian($table = 'daletou', $rednum = 6, $bluenum = 1, $red_max = 35, $blue_max = 12);
+		return $this->tuijian($table = 'dlt', $rednum = 6, $bluenum = 1, $red_max = 35, $blue_max = 12);
 	}
 
 	/*
@@ -113,8 +113,8 @@ class Index extends Controller
 		return view('tuijian');
 	}
 
-	function daletou_history(){
-		$url = 'http://datachart.500.com/dlt/history/history.shtml';
+	function history($type){
+		$url = 'http://datachart.500.com/'.$type.'/history/history.shtml';
 		$table = QueryList::get($url)->find('#tablelist');
 
 		$tableRows = $table->find('tr:gt(0)')->map(function($row){
@@ -126,25 +126,44 @@ class Index extends Controller
 			if($k == 0){
 				continue;
 			}
-			$history = [
-				'qi' => $data[$k][0],
-				'num1' => $data[$k][1],
-				'num2' => $data[$k][2],
-				'num3' => $data[$k][3],
-				'num4' => $data[$k][4],
-				'num5' => $data[$k][5],
-				'num6' => $data[$k][6],
-				'num7' => $data[$k][7],
-				'zhu1' => $data[$k][9],
-				'jj1' => $data[$k][10],
-				'zhu2' => $data[$k][11],
-				'jj2' => $data[$k][12],
-				'zong' => $data[$k][13],
-				'date' => $data[$k][14],
-			];
+			if($type == 'dlt'){
+				$history = [
+					'qi' => $data[$k][0],
+					'num1' => $data[$k][1],
+					'num2' => $data[$k][2],
+					'num3' => $data[$k][3],
+					'num4' => $data[$k][4],
+					'num5' => $data[$k][5],
+					'num6' => $data[$k][6],
+					'num7' => $data[$k][7],
+					'zhu1' => $data[$k][9],
+					'jj1' => $data[$k][10],
+					'zhu2' => $data[$k][11],
+					'jj2' => $data[$k][12],
+					'zong' => $data[$k][13],
+					'date' => $data[$k][14],
+				];
+			}elseif($type == 'ssq'){
+				$history = [
+					'qi' => $data[$k][0],
+					'num1' => $data[$k][1],
+					'num2' => $data[$k][2],
+					'num3' => $data[$k][3],
+					'num4' => $data[$k][4],
+					'num5' => $data[$k][5],
+					'num6' => $data[$k][6],
+					'num7' => $data[$k][7],
+					'zhu1' => $data[$k][10],
+					'jj1' => $data[$k][11],
+					'zhu2' => $data[$k][12],
+					'jj2' => $data[$k][13],
+					'zong' => $data[$k][14],
+					'date' => $data[$k][15],
+				];
+			}
 
-			if(Db::name('daletou_history')->where('qi', $data[$k][0])->count() == 0){
-				Db::name('daletou_history')->insert($history);
+			if(Db::name($type.'_history')->where('qi', $data[$k][0])->count() == 0){
+				Db::name($type.'_history')->insert($history);
 			}
 		}
 	}
