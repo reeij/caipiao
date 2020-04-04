@@ -31,10 +31,17 @@ class Generators extends Controller
         $this->generator = $generator;
     }
 
+    /**
+     * 生成随机号码
+     *
+     * @return array
+     */
     public function run() {
-        $this->generator->piece();
+        $this->assign([
+            'items' => $this->generator->get()
+        ]);
 
-        var_dump($this->generator->queue);
+        return view('run');
     }
 
 }
