@@ -10,27 +10,95 @@ class Generator Implements GeneratorInterface
     /**
      * @var array
      */
+    public $prefixDomain = [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+        24, 25, 26, 27, 28, 29, 30, 31, 32, 33
+    ];
+
+    /**
+     * @var array
+     */
+    public $suffixDomain = [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+    ];
+
+    /**
+     * @var array
+     */
     public $queue = [];
 
     /**
      * @var array
      */
-    public $groups = [];
+    public $queues = [];
+
+    /**
+     * @var array
+     */
+    private $lastTimeNumbers = [];
+
+    /**
+     * @return string
+     */
+    public function get() {
+
+        $prefixDomain = $this->prefixNumbers();
+        $suffixDomain = $this->suffixNumbers();
+
+        array_push($prefixDomain, $suffixDomain);
+
+        foreach ($prefixDomain as $key => &$value) {
+            $value = sprintf('%02s', $value);
+        }
+
+        return $prefixDomain;
+    }
+
+    /**
+     * @return array
+     */
+    public function prefixNumbers()
+    {
+        $this->pieces();
+
+        return $this->queues;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function suffixNumbers()
+    {
+        shuffle($this->suffixDomain);
+
+        $idx = mt_rand(0, 15);
+
+        return $this->suffixDomain[$idx];
+    }
+
+    /**
+     * @param $numbers
+     */
+    public function setLastTimeNum($numbers)
+    {
+        $this->lastTimeNumbers = $numbers;
+    }
 
     /**
      * @return $this
      */
-    public function piece()
+    public function pieces()
     {
-        for ($i = 1; $i <= 7; $i++) {
-            $serialNumber = mt_rand(self::MIN_SEED_NUMBER,
-                self::MAX_SEED_NUMBER);
+        $this->queues = [];
 
-            $this->queue[]
-                = sprintf('%02d', $serialNumber);
+        while (sizeof($this->queues) < 6) {
+            if ($range = $this->range()) {
+                $this->queues[] = $range;
+            }
         }
 
-        sort($this->queue, SORT_NUMERIC);
+        sort($this->queues);
 
         return $this;
     }
@@ -38,12 +106,32 @@ class Generator Implements GeneratorInterface
     /**
      * @return $this
      */
-    public function groups()
+    protected function range()
     {
-        for ($i = 1; $i <= 7; $i++) {
-            $this->groups[$i] = $this->piece();
+
+        shuffle($this->suffixDomain);
+        for ($i = 0, $idx = 0; $i <= bcpow(2, 8); $i++) {
+            $idx = (mt_rand(32, 32 * 111111) % 32);
         }
 
-        return $this;
+        if (!isset($this->prefixDomain[$idx])) {
+            return false;
+        }
+
+        if (true === in_array($this->prefixDomain[$idx],
+                $this->queues)) {
+
+            return false;
+        }
+
+        // 去掉上一期的 7个号码;
+        if (true === in_array($this->prefixDomain[$idx],
+                $this->lastTimeNumbers)) {
+
+            return false;
+        }
+
+        return $this->prefixDomain[$idx];
     }
+
 }
