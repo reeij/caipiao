@@ -15,7 +15,8 @@ Route::get('think', function () {
 
 Route::get('hello/:name', 'index/hello');
 
-Route::get('api/generator', 'api/generators/run');
+Route::get('api/six-plus-one', 'api/generators/sixPlusOne');
+Route::get('api/five-plus-two', 'api/generators/fivePlusTwo');
 
 return [
 

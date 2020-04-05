@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>双色球</title>
+    <style type="text/css">
+
+        @keyframes numberSize
+        {
+            from {
+                font-size: 0%;
+                opacity: 0;
+            }
+            to {
+                font-size: 100%;
+                opacity: 1;
+            }
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: table;
+
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            display: table-cell;
+            vertical-align: middle;
+            color: white;
+            word-wrap: break-word;
+        }
+
+        #container .number {
+            padding: 2rem;
+            display: inline-block;
+            border-radius: 50%;
+            font-size: 500%;
+            margin: 0.5rem;
+            background-color: rgba(255, 0, 0, 1);
+            background-image: radial-gradient(circle, hsla(0,100%,100%,0), hsla(360,100%,0%,0.6));
+            animation: numberSize 0.5s ease-out;
+            opacity: 1;
+        }
+
+        #container .number:last-child {
+            background-color: rgba(0, 0, 255, 1);
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <?php foreach ($items as $key => $item): ?>
+    <div class="number"><?php echo $item; ?></div>
+    <?php endforeach ?>
+</div>
+</body>
+</html>
