@@ -36,12 +36,20 @@ class Generators extends Controller
      *
      * @return array
      */
-    public function run() {
+    public function sixPlusOne() {
         $this->assign([
-            'items' => $this->generator->get()
+            'items' => $this->generator->sixPlusOne()
         ]);
 
-        return view('run');
+        return view('six-plus-one');
+    }
+
+    public function fivePlusTwo() {
+        $this->assign([
+            'items' => $this->generator->fivePlusTwo()
+        ]);
+
+        return view('five-plus-two');
     }
 
 }
