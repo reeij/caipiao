@@ -2,6 +2,10 @@
 
 namespace app\implementation;
 
+use think\Db;
+use think\exception\DbException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
 use app\interfaces\Generator as GeneratorInterface;
 
 class Generator Implements GeneratorInterface
@@ -78,21 +82,8 @@ class Generator Implements GeneratorInterface
     /**
      * @return array
      */
-    public function get() {
-
-        $prefixDomain = $this->prefixNumbers();
-        $suffixDomain = $this->suffixNumbers();
-
-        array_merge($prefixDomain, $suffixDomain);
-
-        foreach ($prefixDomain as $key => &$value) {
-            $value = sprintf('%02s', $value);
-        }
-
-        return $prefixDomain;
-    }
-
     public function sixPlusOne() {
+        $this->setLastTimeNum('ssq');
         $prefixDomain = $this->prefixNumbers();
         $suffixDomain = $this->suffixNumbers();
 
@@ -108,6 +99,7 @@ class Generator Implements GeneratorInterface
     public function fivePlusTwo() {
         $this->type = false;
 
+        $this->setLastTimeNum('dlt');
         $prefixDomain = $this->prefixNumbers();
         $suffixDomain = $this->suffixNumbers(2);
 
@@ -152,11 +144,30 @@ class Generator Implements GeneratorInterface
     }
 
     /**
-     * @param $numbers
+     * @param string $table
+     *
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
+     * @throws DbException
+     * @return Generator
      */
-    public function setLastTimeNum($numbers)
+    public function setLastTimeNum($table)
     {
-        $this->lastTimeNumbers = $numbers;
+        // 查询开奖历史
+        $history = Db::name($table .'_history')
+            ->order('qi desc')->find();
+
+        $this->lastTimeNumbers = [
+            $history['num1'],
+            $history['num2'],
+            $history['num3'],
+            $history['num4'],
+            $history['num5'],
+            $history['num6'],
+            $history['num7'],
+        ];
+
+        return $this;
     }
 
     /**
