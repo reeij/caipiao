@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": ">=7.0",
-        "topthink/framework": "5.1.*",
+        "topthink/framework": "6.0.*",
         "jaeger/querylist": "~V4"
     },
     "autoload": {
